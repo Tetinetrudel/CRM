@@ -1,18 +1,52 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import { BiExclude } from 'react-icons/bi'
 
 import OAuth from './OAuth'
+import Alert from '../../components/Alert'
 
 export default function SignUp() {
+    const navigate = useNavigate()
     const [formData, setFormaData] = useState({})
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState(null)
+    const [success, setSuccess] = useState(null)
 
     const handleChange = (e) => {
         setFormaData({ ...formData, [e.target.id]: e.target.value})
     }
 
-    console.log(formData)
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        try {
+            setLoading(true)
+            const res = await fetch(`http://localhost:3000/api/user/create-user`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            const data = await res.json()
+            if(data.success === false) {
+                setError(data.message)
+                setLoading(false)
+                return
+            }
+            if(res.ok) {
+                setSuccess(data)
+                console.log(success)
+                setTimeout(() => {
+                    navigate('/login')
+                    setSuccess(null)
+                }, 3000)
+            }
+        } catch (error) {
+            setError(error.message)
+        }
+    }
 
     return (
     <>
@@ -27,7 +61,7 @@ export default function SignUp() {
                 </h2>
             </div>
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-                <form className="space-y-3" action="#" method="POST">
+                <form className="space-y-3" onSubmit={handleSubmit}>
                     <div>
                         <label htmlFor="company" className="block text-sm font-medium leading-6 text-gray-900">
                             Non de la compagnie
@@ -114,6 +148,8 @@ export default function SignUp() {
                         Se connecter
                     </Link>
                 </p>
+                {error && <Alert message={error} type="failure" />}
+                {success && <Alert message={success} type="success" />}
             </div>
         </div>
     </>

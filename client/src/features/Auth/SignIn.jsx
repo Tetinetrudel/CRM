@@ -118,8 +118,8 @@ export default function SignIn() {
                 S'inscrire
               </Link>
             </p>
+            {errorMessage && <Alert message={errorMessage} type="failure" />}
           </div>
-          {errorMessage && <Alert message={errorMessage} type="failure" />}
         </div>
       </>
     )
