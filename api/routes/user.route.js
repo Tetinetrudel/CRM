@@ -6,8 +6,8 @@ import { signup, updateUser,  deleteUser } from '../controllers/user.controller.
 
 const router = express.Router()
 
-router.post('/', signup)
-router.put('/', updateUser)
-router.delete('/', deleteUser)
+router.post('/create-user', signup)
+router.put('/update-user/:id', updateUser)
+router.delete('/delete-user/:id', deleteUser)
 
 export default router

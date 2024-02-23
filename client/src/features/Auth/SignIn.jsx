@@ -1,16 +1,47 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from 'react-redux'
 
 import { BiExclude } from 'react-icons/bi'
+import OAuth from './OAuth'
+import { signInFailure, signInStart, signInSuccess } from '../../redux/users/userSlice'
+import Alert from '../../components/Alert'
 
 export default function SignIn() {
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+
+    const { loading, error: errorMessage } = useSelector((state) => state.user)
     const [formData, setFormaData] = useState({})
 
     const handleChange = (e) => {
         setFormaData({ ...formData, [e.target.id]: e.target.value})
     }
 
-    console.log(formData)
+    const handleSubmit = async (e) => {
+      e.preventDefault()
+      try {
+        dispatch(signInStart())
+        const res = await fetch(`http://localhost:3000/api/auth/sign-in`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(formData)
+        })
+        const data = await res.json()
+        if (data.success === false) {
+          dispatch(signInFailure(data.message))
+          return
+        }
+        if(res.ok) {
+          dispatch(signInSuccess(data))
+          navigate('/clients')
+        }
+      } catch (error) {
+        dispatch(signInFailure(error.message))
+      }
+    }
 
     return (
       <>
@@ -25,7 +56,7 @@ export default function SignIn() {
             </h2>
           </div>
           <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-            <form className="space-y-3" action="#" method="POST">
+            <form className="space-y-3" onSubmit={handleSubmit}>
               <div>
                 <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
                   Courriel
@@ -70,13 +101,17 @@ export default function SignIn() {
               <div>
                 <button
                   type="submit"
-                  className="flex w-full justify-center rounded-md bg-blue-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  disabled={loading}
+                  className="flex w-full justify-center rounded-md bg-blue-600 disabled:bg-gray-300 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                 >
-                  Se connecter
+                  {loading ? "Chargement ..." : "Se connecter"}
                 </button>
               </div>
+              
             </form>
-  
+            <div className='mt-4'>
+              <OAuth />
+            </div>
             <p className="mt-10 text-center text-sm text-gray-500">
               Pas de compte?{' '}
               <Link to="/register" className="font-semibold leading-6 text-blue-600 hover:text-blue-500">
@@ -84,6 +119,7 @@ export default function SignIn() {
               </Link>
             </p>
           </div>
+          {errorMessage && <Alert message={errorMessage} type="failure" />}
         </div>
       </>
     )

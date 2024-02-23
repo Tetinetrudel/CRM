@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 
 import { BiExclude } from 'react-icons/bi'
 
+import OAuth from './OAuth'
+
 export default function SignUp() {
     const [formData, setFormaData] = useState({})
 
@@ -103,6 +105,9 @@ export default function SignUp() {
                         </button>
                     </div>
                 </form>
+                <div className='mt-4'>
+                    <OAuth />
+                </div>
                 <p className="mt-10 text-center text-sm text-gray-500">
                     Vous avez déjà un compte?{' '}
                     <Link to="/login" className="font-semibold leading-6 text-blue-600 hover:text-blue-500">
