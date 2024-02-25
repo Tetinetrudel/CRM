@@ -28,7 +28,38 @@ export const signup = async (req, res, next) => {
     }
 }
 
-export const updateUser = async (req, res, next) => {}
+export const updateUser = async (req, res, next) => {
+    const { company, email, profilePicture } = req.body
+    try {
+        const user = await User.findById(req.user.id).exec()
+    
+        if (!user) {
+            return next(errorHandler(400, `L'usager n'a pas été trouvé`))
+        }
+    
+        const duplicate = await User.findOne({ email }).collation({ locale: 'en', strength: 2 }).lean().exec()
+    
+        if (duplicate && duplicate?._id.toString() !== req.user.id) {
+            return next(errorHandler(409, `Le courriel que vous tenté d'entrer existe déjà`))
+        }
+    
+        user.company = company
+        user.email = email
+    
+        if(!profilePicture) {
+            user.profilePicture = user.profilePicture
+        } else {
+            user.profilePicture = profilePicture
+        }
+
+        user.password = user.password
+        const updatedUser = await user.save()
+        const { password, ...rest } = updatedUser._doc
+        res.json(rest)
+    } catch (error) {
+        next(error)
+    }
+}
 
 export const deleteUser = async (req, res, next) => {}
 

@@ -1,15 +1,33 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { signoutSuccess } from '../redux/users/userSlice'
 
 import { BiSearch } from 'react-icons/bi'
 import { GoBell, GoSun, GoMoon, GoCommentDiscussion } from 'react-icons/go'
 
 export default function Navbar() {
+    const dispatch = useDispatch()
     const { currentUser } = useSelector((state) => state.user)
     const [userMenuToggle, setUserMenuToggle] = useState(false)
     const handleChange = () => {} 
+
+    const handleSignout = async () => {
+        try {
+          const res = await fetch('http://localhost:3000/api/auth/sign-out', {
+            method: 'POST',
+          })
+          const data = await res.json()
+          if (!res.ok) {
+            console.log(data.message)
+          } else {
+            dispatch(signoutSuccess())
+          }
+        } catch (error) {
+          console.log(error.message)
+        }
+    }
 
   return (
     <div className='w-full border-b border-gray-200'>
@@ -20,7 +38,7 @@ export default function Navbar() {
                     <input 
                         type="search" 
                         id="search" 
-                        ogenChange={handleChange}
+                        onChange={handleChange}
                         placeholder='Rechercher ...'
                         className='px-2 bg-transparent text-sm outline-none border-none text-gray-800 placeholder:text-gray-400 w-full'
                     />
@@ -40,16 +58,25 @@ export default function Navbar() {
                         onClick={() => setUserMenuToggle(!userMenuToggle)}
                     />
                     {userMenuToggle && (
-                        <div className="absolute divide-y right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
+                        <div className="absolute divide-y right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                             <div className='py-2 text-center'>
                                 <h1 className='font-medium text-md'>{currentUser.company}</h1>
                             </div>
                             <div className='py-2'>
-                                <Link to="/settings/profile" className="hover:bg-gray-50 block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-0">Your Profile</Link>
-                                <Link to="/settings" className="hover:bg-gray-50 block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-1">Settings</Link>
+                                <Link to="/settings/profile" className="hover:bg-gray-50 block px-4 py-2 text-sm text-gray-700">
+                                    Profile
+                                </Link>
+                                <Link to="/settings" className="hover:bg-gray-50 block px-4 py-2 text-sm text-gray-700">
+                                    Paramêtres
+                                </Link>
                             </div>
                             <div className='py-2'>
-                                <button className="hover:bg-gray-50 w-full text-left block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-2">Se déconnecter</button>
+                                <button 
+                                    onClick={handleSignout}
+                                    className="hover:bg-gray-50 w-full text-left block px-4 py-2 text-sm text-gray-700" 
+                                >
+                                    Se déconnecter
+                                </button>
                             </div>
                       </div>
                     )}

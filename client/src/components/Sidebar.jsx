@@ -14,14 +14,14 @@ export default function Sidebar() {
     ]
 
   return (
-    <div className='w-[250px] border-r border-r-gray-300 py-4 px-6'>
+    <div className='w-[250px] border-r border-r-gray-300 py-4 px-6 max-h-screen'>
         <div>
             <Link to="/" className='flex items-center gap-1 text-blue-600 text-2xl'>
                 <BiExclude />
                 <h1 className='font-bold'>Barbill</h1>
             </Link>
         </div>
-        <div className='h-full flex flex-col justify-between'>
+        <div className='flex flex-col justify-between'>
             <ul className='mt-12 flex flex-col space-y-3'>
                 {links.map((el) => (
                     <li key={el.title} className='bg-transparent text-sm text-gray-700 font-medium hover:bg-blue-50 hover:text-blue-600 rounded-md py-2 px-4 flex transition-all delay-150 ease-linear'>
@@ -32,10 +32,12 @@ export default function Sidebar() {
                     </li>
                 ))}
             </ul>
-            <button className='flex items-center gap-2 mb-12 bg-transparent text-sm text-gray-700 font-medium hover:bg-blue-50 hover:text-blue-600 rounded-md py-2 px-4 transition-all delay-150 ease-linear'>
+            <div className="mt-56">
+                <button className='flex items-center gap-2 bg-transparent text-sm text-gray-700 font-medium hover:bg-blue-50 hover:text-blue-600 rounded-md py-2 px-4 transition-all delay-150 ease-linear'>
                     <GoSignOut className='text-lg'/>
                     <span>Se déconnecter</span>
-            </button>
+                </button>
+            </div>
         </div>
     </div>
   )

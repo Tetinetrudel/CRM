@@ -5,6 +5,8 @@ import SignIn from './features/Auth/SignIn'
 import SignUp from './features/Auth/SignUp'
 import PrivateRoute from './layouts/PrivateRoute'
 import SettingsLayout from './layouts/SettingsLayout'
+import Settings from './pages/Settings'
+import Profile from './features/settings/Profile'
 
 function App() {
 
@@ -34,8 +36,8 @@ function App() {
             </Route>
 
             <Route path="/settings" element={<SettingsLayout />}>
-              <Route index element={<h1>settings page</h1>} />
-              <Route path='/settings/profile' element={<h1>Profile settings</h1>} />
+              <Route index element={<Settings />} />
+              <Route path='/settings/profile' element={<Profile />} />
               <Route path='/settings/teams' element={<h1>teams settings</h1>} />
               <Route path='/settings/category' element={<h1>products categories settings</h1>} />
             </Route>
