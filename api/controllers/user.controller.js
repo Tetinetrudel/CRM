@@ -61,5 +61,46 @@ export const updateUser = async (req, res, next) => {
     }
 }
 
-export const deleteUser = async (req, res, next) => {}
+export const updatePassword = async (req, res, next) => {
+    const { actualPassword, newPassword, confirmNewPassword } = req.body
+    try {
+        const user = await User.findById(req.user.id).exec()
+        if (!user) {
+            return next(errorHandler(400, `L'usager n'a pas été trouvé`))
+        }
+
+        const validPassword = bcryptjs.compareSync(actualPassword, user.password)
+        if(!validPassword) {
+            return next(errorHandler(401, `Le mot de passe actuel est érroné`))
+        }
+        
+        if(newPassword !== confirmNewPassword) {
+            return next(errorHandler(401, `Les deux nouveaux mot de passe ne sont pas identique`))
+        }
+
+        const hashPassword = bcryptjs.hashSync(newPassword, 12)
+
+        user.company = user.company
+        user.email = user.email
+        user.profilePicture = user.profilePicture
+        user.password = hashPassword
+        const updatedUser = await user.save()
+        const { password, ...rest } = updatedUser._doc
+        res.json(rest)
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const deleteUser = async (req, res, next) => {
+    if (req.user.id !== req.params.userId) {
+      return next(errorHandler(403, `Vous n'êtes pas autorisé à supprimer cet utilisateur`))
+    }
+    try {
+      await User.findByIdAndDelete(req.params.userId)
+      res.status(200).json('Compte supprimé avec succès')
+    } catch (error) {
+      next(error)
+    }
+  }
 

@@ -22,7 +22,7 @@ export default function SignUp() {
         e.preventDefault()
         try {
             setLoading(true)
-            const res = await fetch(`http://localhost:3000/api/user/create-user`, {
+            const res = await fetch(`/api/user/create-user`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -37,7 +37,6 @@ export default function SignUp() {
             }
             if(res.ok) {
                 setSuccess(data)
-                console.log(success)
                 setTimeout(() => {
                     navigate('/login')
                     setSuccess(null)

@@ -6,7 +6,7 @@ import SignUp from './features/Auth/SignUp'
 import PrivateRoute from './layouts/PrivateRoute'
 import SettingsLayout from './layouts/SettingsLayout'
 import Settings from './pages/Settings'
-import Profile from './features/settings/Profile'
+import Profile from './features/settings/profile/Profile'
 
 function App() {
 

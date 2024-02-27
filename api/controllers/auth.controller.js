@@ -40,7 +40,7 @@ export const signout = (req, res, next) => {
     res
       .clearCookie('access_token')
       .status(200)
-      .json('User has been signed out')
+      .json('Déconnexion réussi')
   } catch (error) {
     next(error)
   }
