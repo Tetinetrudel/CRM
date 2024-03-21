@@ -8,13 +8,13 @@ import { AiOutlineLineChart, AiOutlineShoppingCart } from "react-icons/ai"
 export default function Sidebar() {
 
     const links = [
-        { title: "Ventes", link: '/sales', icon: <AiOutlineShoppingCart /> }, { title: "Clients", link: '/clients', icon: <GoPeople />},
+        { title: "Ventes", link: '/', icon: <AiOutlineShoppingCart /> }, { title: "Clients", link: '/clients', icon: <GoPeople />},
         { title: "Produits", link: '/products', icon: <GoTable /> }, { title: "Inventaire", link: '/inventory', icon: <GoChecklist />},
         { title: "Rapports", link: '/reports', icon: <AiOutlineLineChart />}
     ]
 
   return (
-    <div className='w-[250px] border-r border-r-gray-300 py-4 px-6 max-h-screen'>
+    <div className='w-[200px] py-4 px-6 max-h-screen'>
         <div>
             <Link to="/" className='flex items-center gap-1 text-blue-600 text-2xl'>
                 <BiExclude />

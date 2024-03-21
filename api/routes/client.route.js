@@ -6,9 +6,9 @@ import { getClients, getClient, createClient, updateClient, deleteClient } from 
 
 const router = express.Router()
 
-router.get('/', getClients)
+router.get('/', verifyToken, getClients)
 router.get('/:id', getClient)
-router.post('/create-client', createClient)
+router.post('/create-client', verifyToken, createClient)
 router.put('/update-client/:id', updateClient)
 router.delete('/delete-client/:id', deleteClient)
 

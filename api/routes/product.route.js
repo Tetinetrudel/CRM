@@ -6,9 +6,9 @@ import { getProducts, getProduct, createProduct, updateProduct, deleteProduct } 
 
 const router = express.Router()
 
-router.get('/', getProducts)
+router.get('/', verifyToken, getProducts)
 router.get('/:id', getProduct)
-router.post('/create-product', createProduct)
+router.post('/create-product', verifyToken, createProduct)
 router.put('/update-product/:id', updateProduct)
 router.delete('/delete-product/:id', deleteProduct)
 

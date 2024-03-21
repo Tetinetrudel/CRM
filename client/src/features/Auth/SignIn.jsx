@@ -4,7 +4,11 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { BiExclude } from 'react-icons/bi'
 import OAuth from './OAuth'
+
 import { signInFailure, signInStart, signInSuccess } from '../../redux/users/userSlice'
+import { getCategoriesStart, getCategoriesSuccess, getCategoriesFailure } from '../../redux/categories/categorySlice'
+import { getClientsStart, getClientsSuccess, getClientsFailure } from '../../redux/clients/clientSlice'
+
 import Alert from '../../components/Alert'
 
 export default function SignIn() {
@@ -17,6 +21,50 @@ export default function SignIn() {
     const handleChange = (e) => {
         setFormaData({ ...formData, [e.target.id]: e.target.value})
     }
+
+    const getCategories = async () => {
+      dispatch(getCategoriesStart())
+          try {
+              const res = await fetch(`/api/category`, {
+                  method: 'GET',
+                  headers: {
+                      'Content-Type': 'application/json'
+                  }
+              })
+              const data = await res.json()
+              if(data.success === false) {
+                  dispatch(getCategoriesFailure(data.message))
+                  return
+              }
+              if(res.ok) {
+                  dispatch(getCategoriesSuccess(data))
+              }
+          } catch (error) {
+              dispatch(getCategoriesFailure(error))
+          }
+      }
+
+      const getClients = async () => {
+        dispatch(getClientsStart())
+        try {
+          const res = await fetch(`/api/client`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          })
+          const data = await res.json()
+          if(data.success === false) {
+            dispatch(getClientsFailure(data.message))
+            return
+          }
+          if(res.ok) {
+            dispatch(getClientsSuccess(data))
+          }
+        } catch (error) {
+          dispatch(getClientsFailure(error))
+        }
+      }
 
     const handleSubmit = async (e) => {
       e.preventDefault()
@@ -36,7 +84,11 @@ export default function SignIn() {
         }
         if(res.ok) {
           dispatch(signInSuccess(data))
-          navigate('/clients')
+          getCategories()
+          getClients()
+          setTimeout(() => {
+            navigate('/clients')
+          }, 50)
         }
       } catch (error) {
         dispatch(signInFailure(error.message))

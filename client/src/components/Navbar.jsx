@@ -1,17 +1,31 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import { useSelector, useDispatch } from 'react-redux'
 import { signoutSuccess } from '../redux/users/userSlice'
+import { clearAllClients } from '../redux/clients/clientSlice'
+import { clearAllCategories } from '../redux/categories/categorySlice'
 
 import { BiSearch } from 'react-icons/bi'
 import { GoBell, GoSun, GoMoon, GoCommentDiscussion } from 'react-icons/go'
 
 export default function Navbar() {
     const dispatch = useDispatch()
+    const navigate = useNavigate()
     const { currentUser } = useSelector((state) => state.user)
     const [userMenuToggle, setUserMenuToggle] = useState(false)
+    
     const handleChange = () => {} 
+
+    const handleProfile = () => {
+        setUserMenuToggle(false)
+        navigate('/settings/profile')
+    }
+
+    const handleSettings = () => {
+        setUserMenuToggle(false)
+        navigate('/settings/profile')
+    }
 
     const handleSignout = async () => {
         try {
@@ -23,6 +37,8 @@ export default function Navbar() {
             console.log(data.message)
           } else {
             dispatch(signoutSuccess())
+            dispatch(clearAllClients())
+            dispatch(clearAllCategories())
           }
         } catch (error) {
           console.log(error.message)
@@ -30,7 +46,7 @@ export default function Navbar() {
     }
 
   return (
-    <div className='w-full border-b border-gray-200'>
+    <div className='w-full'>
         <nav className='flex items-center justify-between py-4 px-10'> 
             <form>
                 <div className='flex items-center w-96'>
@@ -63,12 +79,12 @@ export default function Navbar() {
                                 <h1 className='font-medium text-md'>{currentUser.company}</h1>
                             </div>
                             <div className='py-2'>
-                                <Link to="/settings/profile" className="hover:bg-gray-50 block px-4 py-2 text-sm text-gray-700">
+                                <button onClick={handleProfile} className="hover:bg-gray-50 block px-4 py-2 text-sm text-gray-700 w-full text-left">
                                     Profile
-                                </Link>
-                                <Link to="/settings" className="hover:bg-gray-50 block px-4 py-2 text-sm text-gray-700">
+                                </button>
+                                <button onClick={handleSettings} className="hover:bg-gray-50 block px-4 py-2 text-sm text-gray-700 w-full text-left">
                                     Paramêtres
-                                </Link>
+                                </button>
                             </div>
                             <div className='py-2'>
                                 <button 
